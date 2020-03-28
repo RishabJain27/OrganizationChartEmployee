@@ -9,9 +9,12 @@ import java.util.List;
 
 import com.opencsv.*;
 
+/*All parsing of csv files is done in this class as well as printing approraite information from
+ Personal, Organization, and Team csv files
+*/
 public class App 
 { 
-		//puts data from List into objects
+	//puts data from List into objects
 	private List<Personal> personalRow;
 	private List<Organization> organizationRow ;
 	private List<Team> TeamRow;
@@ -37,8 +40,8 @@ public class App
 			for (Iterator<Organization> iterOrg = organizationRow.iterator(); iterOrg.hasNext();) {
 				Organization elementOrg = iterOrg.next();
 				if(elementOrg.getId().equals(elementPersonal.getId())) {
-					elementPersonal.setTitle(elementOrg.getTitle() + " ");
-					elementPersonal.setOrganization(elementOrg.getOrganization() + " ");
+					elementPersonal.setTitle(elementOrg.getTitle());
+					elementPersonal.setOrganization(elementOrg.getOrganization());
 					break;
 				}
 			}	
@@ -129,6 +132,10 @@ public class App
 		}
 	}
 		
+	/*Looks up first person and gets id matching to firstname, lastname, or both and calls recursiveLookUpId
+	  to look for each person under the managers id or until it reaches a certian level. If they are duplicates
+	  the functional will print their information as well.
+	*/
 	public void printOrg(String name, String lastname, int level, boolean fullname, boolean isLevel) {
 		//Lookup id for first person in Personal Table and call recursive function to get rest of info
 		for (Iterator<Personal> iter = personalRow.iterator(); iter.hasNext();) {
@@ -136,12 +143,10 @@ public class App
 			if(fullname && ( element.getFirst().equals(name)) && element.getLast().equals(lastname)) {
 				String id = element.getId();
 				recursiveLookUpID(id,level,isLevel);
-				System.out.println(); 
 			}
 			else if(!fullname && ( element.getFirst().equals(name) ||element.getLast().equals(name))){
 				String id = element.getId();
 				recursiveLookUpID(id,level,isLevel);
-				System.out.println(); 
 			}
 			//Continue looking for additional matches
 		}	
@@ -152,6 +157,7 @@ public class App
 	private static final String pluginPathOrganization =System.getProperty("user.dir") + "/src/main/resources/Organization.csv";
 	private static final String pluginPathTeam =System.getProperty("user.dir") + "/src/main/resources/Team.csv";
 	
+	//Does command line parsing and calls class App to do the rest.
     public static void main( String[] args ) throws Exception
     {
     	
@@ -166,8 +172,7 @@ public class App
 	    switch (length) { 
 	    	case 1: 
 	            if(isInteger(args[0])) {
-	            	System.err.println("First argument can't be a Integer.");
-	    			System.exit(0);
+	            	throw new Exception("First argument can't be a Integer.");
 	            }
 	            else {
 	            	name = args[0];
@@ -175,8 +180,8 @@ public class App
 	            break; 
 	        case 2: 
 	        	if(isInteger(args[0])) {
-	            	System.err.println("First argument can't be a Integer.");
-	    			System.exit(0);
+	            	//System.err.println("First argument can't be a Integer.");
+	            	throw new Exception("First argument can't be a Integer.");
 	            }
 	        	name = args[0];
 	        	
@@ -184,8 +189,7 @@ public class App
 	            	level = Integer.parseInt(args[1]);
 	            	isLevel = true;
 	            	if(level < 1) {
-	            		System.err.println("Level must be greater than 1");
-		    			System.exit(0);
+	            		throw new Exception("Level must be greater than or equal to 1");
 	            	}
 	            }
 	        	else {
@@ -195,35 +199,29 @@ public class App
 	            break; 
 	        case 3: 
 	        	if(isInteger(args[0])) {
-	            	System.err.println("First argument can't be a Integer.");
-	    			System.exit(0);
+	            	throw new Exception("First argument can't be a Integer.");
 	            }
 	        	name = args[0];
 	        	
 	        	if(isInteger(args[1])) {
-	        		System.err.println("LastName can't be an integer.");
-	    			System.exit(0);
+	        		throw new Exception("LastName can't be an integer.");
 	            }
 	        	lastName = args[1];
 	        	fullname = true;
 	        	
 	        	if(!isInteger(args[2])) {
-	            	System.err.println("Level must be an Integer");
-	    			System.exit(0);
+	            	throw new Exception("Level must be an Integer");
 	            }
 	        	else {
 	        		level = Integer.parseInt(args[2]);
 	        		isLevel = true;
 	            	if(level < 1) {
-	            		System.err.println("Level must be greater than 1");
-		    			System.exit(0);
+	            		throw new Exception("Level must be greater than or equal to 1");
 	            	}
 	        	}
 	            break; 
 	        default: 
-	        	System.err.println("Invalid number of arguments.");
-    			System.exit(0); 
-	            break; 
+	        	throw new Exception("Invalid number of arguments."); 
 	        }  
 	    
 	    //Create instance of App

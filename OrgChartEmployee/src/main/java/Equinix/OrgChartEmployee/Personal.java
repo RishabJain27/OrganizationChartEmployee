@@ -1,6 +1,6 @@
 package Equinix.OrgChartEmployee;
 
-//Object for Personal file
+//Object for Personal file and has two fields from Orgnaization
 public class Personal {
 	private String first;
 	private String last;
@@ -68,6 +68,6 @@ public class Personal {
 
 	@Override
 	public String toString() {
-		return first + " " + last + " " + title + organization + phone;
+		return String.format("%-10s", first)+String.format("%-10s", last) + String.format("%-15s", title)+ String.format("%-25s", organization) + String.format("%-15s", phone);
 	}
 }
